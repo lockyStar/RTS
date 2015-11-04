@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using RTS;
 
 public class WorldObject : MonoBehaviour
@@ -62,7 +63,7 @@ public class WorldObject : MonoBehaviour
         //only handle input if currently selected
         if (currentlySelected && hitObject && hitObject.name != "Ground")
         {
-            WorldObject worldObject = hitObject.transform.root.GetComponent<WorldObject>();
+            WorldObject worldObject = hitObject.transform.parent.GetComponent<WorldObject>(); //ADDED
             //clicked on another selectable object
             if (worldObject) ChangeSelection(worldObject, controller);
         }
@@ -76,8 +77,16 @@ public class WorldObject : MonoBehaviour
             selectionBounds.Encapsulate(r.bounds);
         }
     }
-
-    /*** Private worker methods ***/
+    //ADDED
+    public virtual void SetHoverState(GameObject hoverObject)
+    {
+        /*only handle input if owned by a human player and currently selected
+        if (player && player.human && currentlySelected)
+        {
+            if (hoverObject.name != "Ground") player.hud.SetCursorState(CursorState.Select);
+        }*/
+    }
+    //ADDED
 
     private void ChangeSelection(WorldObject worldObject, Player controller)
     {
@@ -97,31 +106,17 @@ public class WorldObject : MonoBehaviour
         DrawSelectionBox(selectBox);
         GUI.EndGroup();
     }
-
+    //ADDED
+    public void SetSelection(bool selected)
+    {
+        player.hud.GetPlayingArea();
+        currentlySelected = selected;
+    }
+    //ADDED
     /* Internal worker methods that can be accessed by subclass */
 
     protected virtual void DrawSelectionBox(Rect selectBox)
     {
         GUI.Box(selectBox, "");
-    }
-
-    public virtual void MouseClick(GameObject hitObject, Vector3 hitPoint, Player controller)
-    {
-        //only handle input if currently selected
-        if (currentlySelected && hitObject && hitObject.name != "Ground")
-        {
-            WorldObject worldObject = hitObject.transform.root.GetComponent<WorldObject>();
-            //clicked on another selectable object
-            if (worldObject) ChangeSelection(worldObject, controller);
-        }
-    }
-
-    private void ChangeSelection(WorldObject worldObject, Player controller)
-    {
-        //this should be called by the following line, but there is an outside chance it will not
-        SetSelection(false);
-        if (controller.SelectedObject) controller.SelectedObject.SetSelection(false);
-        controller.SelectedObject = worldObject;
-        worldObject.SetSelection(true);
     }
 }

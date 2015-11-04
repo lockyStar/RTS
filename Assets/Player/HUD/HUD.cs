@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HUD : MonoBehaviour {
+public class HUD : MonoBehaviour
+{
 
     private const int SELECTION_NAME_HEIGHT = 15;
 
@@ -10,13 +11,15 @@ public class HUD : MonoBehaviour {
     private const int ORDERS_BAR_WIDTH = 150, RESOURCE_BAR_HEIGHT = 40;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
         player = transform.root.GetComponent<Player>();
     }
-	
-	// Update is called once per frame
-	void OnGUI () {
+
+    // Update is called once per frame
+    void OnGUI()
+    {
         if (player && player.human)
         {
             DrawOrdersBar();
@@ -50,6 +53,11 @@ public class HUD : MonoBehaviour {
         GUI.BeginGroup(new Rect(0, 0, Screen.width, RESOURCE_BAR_HEIGHT));
         GUI.Box(new Rect(0, 0, Screen.width, RESOURCE_BAR_HEIGHT), "");
         GUI.EndGroup();
+    }
+
+    public Rect GetPlayingArea()
+    {
+        return new Rect(0, RESOURCE_BAR_HEIGHT, Screen.width - ORDERS_BAR_WIDTH, Screen.height - RESOURCE_BAR_HEIGHT);
     }
 
     public bool MouseInBounds()
